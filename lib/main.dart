@@ -4,9 +4,21 @@ void main() => runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          body: const Text("Olá DSM"),
+          body: const Card(
+              child: Column(
+            children: [
+              Text('Teste1'),
+              Text('Teste2'),
+              Text('Teste3'),
+              Text('33333333333333333333333333333333'),
+            ],
+          )),
           appBar: AppBar(
-            title: const Text('Transferências'),
+            //cololocar cor no texto Transferência
+            title: const Text(
+              "Transferência",
+              style: TextStyle(color: Colors.white),
+            ),
             backgroundColor: Colors.blue,
           ),
           floatingActionButton: FloatingActionButton(
