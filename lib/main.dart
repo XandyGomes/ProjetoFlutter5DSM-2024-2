@@ -2,56 +2,78 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 void main() => runApp(
-      MaterialApp(
+      const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          body: const ListaTransferencia(),
-          appBar: AppBar(
-            //cololocar cor no texto Transferência
-            title: const Text(
-              "Transferência",
-              style: TextStyle(color: Colors.white),
-            ),
-            backgroundColor: Colors.blue,
-          ),
-          floatingActionButton: FloatingActionButton(
-              onPressed: () {},
-              backgroundColor: Colors.blue,
-              child: const Icon(
-                Icons.add,
-                size: 35,
-                color: Colors.white,
-              )),
+          body: FormularioTranferencia(),
         ),
       ),
     );
+
+class FormularioTranferencia extends StatelessWidget {
+  const FormularioTranferencia({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Text("TESTE");
+  }
+}
 
 class ListaTransferencia extends StatelessWidget {
   const ListaTransferencia({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        ItemTransferencia(),
-        ItemTransferencia(),
-        ItemTransferencia(),
-      ],
+    return Scaffold(
+      appBar: AppBar(
+        //cololocar cor no texto Transferência
+        title: const Text(
+          "Transferência",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+      ),
+      body: Column(
+        children: [
+          ItemTransferencia(Transferencia(100.0, 1234)),
+          ItemTransferencia(Transferencia(150.0, 3245)),
+          ItemTransferencia(Transferencia(1169.0, 14564)),
+          ItemTransferencia(Transferencia(12515.0, 5827)),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Colors.blue,
+        child: const Icon(
+          Icons.add,
+          size: 35,
+          color: Colors.white,
+        ),
+      ),
     );
   }
 }
 
 class ItemTransferencia extends StatelessWidget {
-  const ItemTransferencia({super.key});
+  final Transferencia _transferencia;
+
+  const ItemTransferencia(this._transferencia, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Card(
+    return Card(
       child: ListTile(
-        leading: Icon(Icons.monetization_on, color: Colors.green),
-        title: Text('1234-5'),
-        subtitle: Text('100.0'),
+        leading: const Icon(Icons.monetization_on, color: Colors.green),
+        title: Text(_transferencia.valor.toString()),
+        subtitle: Text(_transferencia.numeroConta.toString()),
       ),
     );
   }
+}
+
+class Transferencia {
+  final double? valor; //
+  final int numeroConta;
+
+  Transferencia(this.valor, this.numeroConta);
 }
