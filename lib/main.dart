@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 void main() => runApp(
@@ -15,7 +17,47 @@ class FormularioTranferencia extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Text("TESTE");
+    return Scaffold(
+      appBar: AppBar(
+        //cololocar cor no texto Transferência
+        title: const Text(
+          "Nova Transferência",
+          style: TextStyle(color: Colors.white),
+        ),
+        backgroundColor: Colors.blue,
+      ),
+      body: Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              style: TextStyle(fontSize: 24.0),
+              decoration: InputDecoration(
+                  labelText: 'Numero da conta', hintText: '0000'),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: TextField(
+              style: TextStyle(fontSize: 24.0),
+              decoration: InputDecoration(
+                  icon: Icon(Icons.monetization_on, color: Colors.green),
+                  labelText: 'Valor',
+                  hintText: '0.00'),
+              keyboardType: TextInputType.number,
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {},
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.blue),
+            ),
+            child: const Text('Confirmar'),
+          )
+        ],
+      ),
+    );
   }
 }
 
@@ -45,7 +87,7 @@ class ListaTransferencia extends StatelessWidget {
         onPressed: () {},
         backgroundColor: Colors.blue,
         child: const Icon(
-          Icons.add,
+          Icons.add_circle_rounded,
           size: 35,
           color: Colors.white,
         ),
