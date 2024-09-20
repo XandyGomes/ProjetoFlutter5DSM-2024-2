@@ -4,10 +4,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 void main() => runApp(
-      MaterialApp(
+      const MaterialApp(
         debugShowCheckedModeBanner: false,
         home: Scaffold(
-          body: FormularioTransferencia(),
+          body: ListaTransferencia(),
         ),
       ),
     );
@@ -24,7 +24,7 @@ class FormularioTransferencia extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         //cololocar cor no texto Transferência
-        title: const Text(
+        title: Text(
           "Nova Transferência",
           style: TextStyle(color: Colors.white),
         ),
@@ -32,19 +32,22 @@ class FormularioTransferencia extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Editor(_controllerCampoNumeroConta, 'Numero da conta', '0000',),
-          Editor(_controllerCampoValor, 'Valor', '0.00',),
-
+          Editor(
+              controlador: _controllerCampoNumeroConta,
+              rotulo: 'Numero da conta',
+              dica: '0000'),
+          Editor(
+              controlador: _controllerCampoValor,
+              rotulo: 'Valor',
+              dica: '0.00',
+              icone: Icons.monetization_on),
           ElevatedButton(
             onPressed: () {
-              debugPrint("Clicou em confirmar");
-              final int? numeroConta =
-                  int.tryParse(_controllerCampoNumeroConta.text);
-              final double? valor = double.tryParse(_controllerCampoValor.text);
-              if (numeroConta != null && valor != null) {
-                final transferenciaCriada = Transferencia(valor, numeroConta);
-                debugPrint('$transferenciaCriada');
-              }
+              _criarTransferencia(
+                context,
+                _controllerCampoNumeroConta,
+                _controllerCampoValor,
+              );
             },
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(Colors.blue),
@@ -58,25 +61,46 @@ class FormularioTransferencia extends StatelessWidget {
       ),
     );
   }
+
+  void _criarTransferencia(BuildContext context, _controllerCampoNumeroConta,
+      _controllerCampoValor) {
+    debugPrint("Clicou em confirmar");
+    final int? numeroConta = int.tryParse(_controllerCampoNumeroConta.text);
+    final double? valor = double.tryParse(_controllerCampoValor.text);
+    if (numeroConta != null && valor != null) {
+      final transferenciaCriada = Transferencia(valor, numeroConta);
+      debugPrint('Criando transferência');
+      debugPrint('$transferenciaCriada');
+      Navigator.pop(context, transferenciaCriada);
+    }
+  }
 }
 
 class Editor extends StatelessWidget {
-  final TextEditingController _controlador;
-  final String _rotulo;
-  final String _dica;
+  final TextEditingController? controlador;
+  final String? rotulo;
+  final String? dica;
+  final IconData? icone;
 
-  const Editor(this._controlador, this._rotulo, this._dica, {super.key});
+  const Editor(
+      {super.key, this.controlador, this.rotulo, this.dica, this.icone});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextField(
-        controller: _controlador,
+        controller: controlador,
         style: const TextStyle(fontSize: 24.0),
         decoration: InputDecoration(
-          labelText: _rotulo,
-          hintText: _dica,
+          icon: icone != null
+              ? Icon(
+                  icone,
+                  color: Colors.green,
+                )
+              : null,
+          labelText: rotulo,
+          hintText: dica,
         ),
         keyboardType: TextInputType.number,
       ),
@@ -107,7 +131,16 @@ class ListaTransferencia extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          final Future<Transferencia?> future =
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return FormularioTransferencia();
+          }));
+          future.then((transferenciaRecebida) {
+            debugPrint('chegou no then do future');
+            debugPrint('$transferenciaRecebida');
+          });
+        },
         backgroundColor: Colors.blue,
         child: const Icon(
           Icons.add_circle_rounded,
