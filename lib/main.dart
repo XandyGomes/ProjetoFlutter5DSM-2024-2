@@ -3,14 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
-void main() => runApp(
-      const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Scaffold(
-          body: ListaTransferencia(),
-        ),
-      ),
+void main() => runApp(const Banco());
+
+class Banco extends StatelessWidget {
+  const Banco({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: ListaTransferencia(),
     );
+  }
+}
 
 class FormularioTransferencia extends StatelessWidget {
   final TextEditingController _controllerCampoNumeroConta =
@@ -24,7 +28,7 @@ class FormularioTransferencia extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         //cololocar cor no texto Transferência
-        title: Text(
+        title: const Text(
           "Nova Transferência",
           style: TextStyle(color: Colors.white),
         ),
@@ -62,11 +66,11 @@ class FormularioTransferencia extends StatelessWidget {
     );
   }
 
-  void _criarTransferencia(BuildContext context, _controllerCampoNumeroConta,
-      _controllerCampoValor) {
+  void _criarTransferencia(
+      BuildContext context, controllerCampoNumeroConta, controllerCampoValor) {
     debugPrint("Clicou em confirmar");
-    final int? numeroConta = int.tryParse(_controllerCampoNumeroConta.text);
-    final double? valor = double.tryParse(_controllerCampoValor.text);
+    final int? numeroConta = int.tryParse(controllerCampoNumeroConta.text);
+    final double? valor = double.tryParse(controllerCampoValor.text);
     if (numeroConta != null && valor != null) {
       final transferenciaCriada = Transferencia(valor, numeroConta);
       debugPrint('Criando transferência');
@@ -108,9 +112,19 @@ class Editor extends StatelessWidget {
   }
 }
 
-class ListaTransferencia extends StatelessWidget {
-  const ListaTransferencia({super.key});
+class ListaTransferencia extends StatefulWidget {
+  final List<Transferencia> _transferencias = [];
 
+  ListaTransferencia({super.key});
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ListaTransferenciasState();
+  }
+}
+
+class ListaTransferenciasState extends State<ListaTransferencia> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,14 +136,12 @@ class ListaTransferencia extends StatelessWidget {
         ),
         backgroundColor: Colors.blue,
       ),
-      body: Column(
-        children: [
-          ItemTransferencia(Transferencia(100.0, 1234)),
-          ItemTransferencia(Transferencia(150.0, 3245)),
-          ItemTransferencia(Transferencia(1169.0, 14564)),
-          ItemTransferencia(Transferencia(12515.0, 5827)),
-        ],
-      ),
+      body: ListView.builder(
+          itemCount: widget._transferencias.length,
+          itemBuilder: (context, indice) {
+            final transferencia = widget._transferencias[indice];
+            return ItemTransferencia(transferencia);
+          }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           final Future<Transferencia?> future =
@@ -139,6 +151,9 @@ class ListaTransferencia extends StatelessWidget {
           future.then((transferenciaRecebida) {
             debugPrint('chegou no then do future');
             debugPrint('$transferenciaRecebida');
+            setState(() {
+              widget._transferencias.add(transferenciaRecebida!);
+            });
           });
         },
         backgroundColor: Colors.blue,
